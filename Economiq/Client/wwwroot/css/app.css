@@ -70,9 +70,10 @@
     }
 
     .landingpage .footer {
-        margin: 20px 0;
+        margin: 20px 20px;
+        padding-right: 10px;
         display: flex;
-        color: white;
+        color: #01ddff;
         align-items: center;
         justify-content: space-between;
     }
@@ -327,16 +328,10 @@
         justify-content: space-between;
         border-top: 1px solid #fff;
         padding-top: 10px;
-        color: white;
-
+        color: #01ddff;
         position: fixed;
         bottom: 1px;
         height: 7rem;
-    }
-    .effekt {
-        transition: ease-in 2.2s;
-
-        text-align: center;
     }
 
     body {
@@ -385,12 +380,16 @@
             }
 .landingpage .footer2 {
     display: flex;
-    justify-content: space-between;
     border-top: 1px solid #fff;
-    padding-top: 10px;
+    padding-top: 4px;
     position: fixed;
-    bottom: 1px;
-    height: 7rem;
+    bottom: 2px;
+ 
+    align-content: flex-end;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 }
 
@@ -401,23 +400,16 @@
         text-align: center;
     }
     .footer {
-        color: white;
+        color: #01ddff;
     }
 
-    .landingpage .box .infobox-slimtext {
-        text-align: center;
-    }
+
 
     .landingpage .box .infobox-btnwrapper {
         justify-content: center;
     }
 
-    .effekt {
-        transition: ease-in 1.2s;
 
-        text-align: center;
-    }
-}
 
 @keyframes leftslide {
     from {
