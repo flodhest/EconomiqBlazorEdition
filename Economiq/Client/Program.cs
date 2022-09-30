@@ -35,6 +35,7 @@ builder.Services.AddTransient<RecipientService>();
 builder.Services.AddSingleton<ApiService>();
 builder.Services.AddSingleton<AppState>();
 builder.Services.AddTransient<ExpenseService>();
+
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<BudgetService>();
 builder.Services.AddTransient<ExpenseCategoryService>();

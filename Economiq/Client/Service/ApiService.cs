@@ -25,6 +25,10 @@ namespace Economiq.Client.Service
         {
             return _httpClient.CreateClient("recipient");
         }
+        public HttpClient GetLoginClient()
+        {
+            return _httpClient.CreateClient("login");
+        }
 
         public HttpClient GetUserClient()
         {
