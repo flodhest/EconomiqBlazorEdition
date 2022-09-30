@@ -1,0 +1,34 @@
+﻿@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@page "/budget/{IdAsString}"
+@inject BudgetService _budgetService;
+
+@if(_budget != null){
+    <h3>@_budget.YearAndMonth</h3>
+    <p>@_budget.MaxAmount</p>
+    
+    if(_budget.Expenses !=null){
+        <h4>Expenses:</h4>
+        foreach (var expense in _budget.Expenses)
+        {
+           <h5>Title: @expense.Title</h5>
+           <p>Amount: @expense.Amount</p>
+           <p>Category: @expense.categoryName</p>
+           <p>Recipient: @expense.RecipientName</p>
+           <p>Date: @expense.ExpenseDate</p>
+        }
+    }
+    
+}
+@code {
+    [Parameter]
+    public string IdAsString { get; set; }
+    public Guid Id { get; set; }
+    private ListBudgetDTO? _budget;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Id = Guid.Parse(IdAsString);
+        _budget = await _budgetService.GetBudgetById(Id);
+    }
+}

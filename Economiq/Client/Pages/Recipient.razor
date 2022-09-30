@@ -1,0 +1,85 @@
+﻿@page "/recipient"
+@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@inject AppState _appState
+@inject RecipientService _recipientService
+@implements IDisposable
+
+<h3>Add Recipient</h3>
+<fieldset>
+<EditForm Model ="@NewRecipient" OnValidSubmit="AddRecipient">
+        <DataAnnotationsValidator />
+    <ValidationSummary />
+
+        <div class="mb-2 form-group form-floating">
+            <InputText class="form-control" id="name" placeholder="name" @bind-Value="@NewRecipient.Name" />
+            <label for="name">Name:</label>
+            <ValidationMessage For="@(() => NewRecipient.Name)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText class="form-control" id="city" placeholder="city" @bind-Value="@NewRecipient.City" />
+            <label for="city">City:</label>
+            <ValidationMessage For="@(()=> NewRecipient.City)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText class="form-control" id="street" placeholder="street" @bind-Value="@NewRecipient.Street" />
+            <label for="street">Street:</label>
+            <ValidationMessage For="@(()=> NewRecipient.Street)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText class="form-control" id="zipcode" placeholder="zipcode" @bind-Value="@NewRecipient.Zipcode" />
+            <label for="zipcode">Zipcode:</label>
+            <ValidationMessage For="@(()=> NewRecipient.Zipcode)" />
+        </div>
+        <div class="mb-2">
+      <button class="mx-auto w-25 btn btn-success">Add Recipient</button>
+    </div>
+        </EditForm>
+</fieldset>
+<hr class="separator" />
+<h2>Recipients</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Street</th>
+        <th>Zipcode</th>
+        <th>City</th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach(RecipientDTO recipient in recipients){
+    <tr>    
+     <td>@recipient.Name</td>
+    <td>@recipient.Street</td>
+    <td>@recipient.Zipcode</td>
+    <td>@recipient.City</td>
+  </tr>
+}
+</tbody>
+</table>
+
+@code {
+    private RecipientDTO NewRecipient = new();
+    private List<RecipientDTO> recipients = new();
+    private async void AddRecipient()
+    {
+        await _recipientService.CreateRecipient(NewRecipient);
+        recipients = await _recipientService.GetRecipients();
+        recipients.Reverse();
+        NewRecipient.Name = String.Empty;
+        NewRecipient.City = String.Empty;
+        NewRecipient.Street = String.Empty;
+        NewRecipient.Zipcode = String.Empty;
+        StateHasChanged();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        recipients = await _recipientService.GetRecipients();
+        recipients.Reverse();
+    }
+    public void Dispose()
+    {
+        _appState.OnStateChange -= StateHasChanged;
+    }
+}

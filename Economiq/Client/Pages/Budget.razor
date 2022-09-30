@@ -1,0 +1,38 @@
+﻿@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@page "/budget"
+@inject BudgetService _budgetService
+@inject AppState _appState
+@inject NavigationManager _navigationManager
+@implements IDisposable
+
+<h3 class="d-flex justify-content-center">Your Budgets</h3>
+@foreach (var item in AllBudgets)
+{
+    <div>
+        <button class="btn-primary w-100 btn btn-lg" @onclick="()=> GotoBudget(item.Id)">@item.YearAndMonth</button>
+        <br />
+        <br />
+    </div>
+    
+}
+
+
+
+
+@code {
+    private List<ListBudgetDTO> AllBudgets = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllBudgets = await _budgetService.GetAllBudgets();
+    }
+
+    private void GotoBudget(Guid id){
+        _navigationManager.NavigateTo($"/budget/{id}");
+    }
+    public void Dispose()
+    {
+        _appState.OnStateChange -= StateHasChanged;
+    }
+}

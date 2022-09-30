@@ -1,0 +1,90 @@
+﻿@page "/register"
+@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@inject AppState _appState
+@inject UserService _userService
+@implements IDisposable
+
+<PageTitle>Register</PageTitle>
+
+<h3>Register</h3>
+<p>@_succesMessage</p>
+<fieldset>
+
+    <EditForm Model=@NewUser OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-2 form-group form-floating">
+            <InputText id="Fname" placeholder="FirstName" @bind-Value="@NewUser.Fname" class="form-control" />
+            <label for="Fname">FirstName:</label>
+            <ValidationMessage For="@(() => NewUser.Fname)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText id="Lname" placeholder="LastName" @bind-Value="@NewUser.Lname" class="form-control" />
+            <label for="Lname">LastName:</label>
+            <ValidationMessage For="@(() => NewUser.Lname)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText id="Username" placeholder="Username" @bind-Value="@NewUser.Username" class="form-control" />
+            <label for="Username">Username:</label>
+            <ValidationMessage For="@(() => NewUser.Username)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText id="email" placeholder="email" @bind-Value="@NewUser.email" class="form-control" />
+            <label for="email">Email:</label>
+            <ValidationMessage For="@(() => NewUser.email)" />
+        </div>
+        <div class="mb-2 form-group form-floating">
+            <InputText id="password" type="password" placeholder="password" @bind-Value="@NewUser.password" class="form-control" />
+            <label for="password">Password:</label>
+            <ValidationMessage For="@(() => NewUser.password)" />
+        </div>
+
+
+        <div class="mb-2 form-group form-floating">
+            <InputText id="City" placeholder="City" @bind-Value="@NewUser.City" class="form-control" />
+            <label for="City">City:</label>
+            <ValidationMessage For="@(() => NewUser.City)" />
+        </div>
+
+
+        <div>
+            <button class="mx-auto w-25 btn btn-success">Register</button>
+
+        </div>
+
+    </EditForm>
+
+
+</fieldset>
+
+
+@code {
+    public UserDTO NewUser = new();
+    private string _succesMessage = string.Empty;
+
+    private async void OnSubmit()
+    {
+        NewUser.Gender = string.Empty;
+        await _userService.CreateUser(NewUser);
+        NewUser.Fname = string.Empty;
+        NewUser.Lname = string.Empty;
+        NewUser.Username = string.Empty;
+        NewUser.email = string.Empty;
+        NewUser.password = string.Empty;
+        NewUser.City = string.Empty;
+        _succesMessage = "Registration has been succesful!";
+
+    }
+
+
+
+
+    public void Dispose()
+    {
+        _appState.OnStateChange -= StateHasChanged;
+    }
+
+
+}

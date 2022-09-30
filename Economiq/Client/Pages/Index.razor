@@ -1,0 +1,55 @@
+﻿@page "/"
+@using Economiq.Client.Service
+@inject AppState _appState
+@inject UserService _userService
+@implements IDisposable
+
+  <div class="box">
+    <div class="infobox">
+      <p class="infobox-boldtext">
+            Discover the new<br />Economiq Blazor Edition<br />
+    Can you afford not to?<br/>
+      </p>
+      <p class="infobox-slimtext">
+   
+      </p><br />
+     
+    </div>
+     <div class="infobox">
+            <NavLink class="infobox-explorebtn selected" href="budget"> <span class="navlink">Budget</span></NavLink><br />
+
+            <NavLink class="infobox-explorebtn selected" href="expense"> <span class="navlink">Expense</span></NavLink>
+      </div>
+    </div>
+        <div class="info2">
+    
+        </div>
+
+        <br />
+      
+
+    <div class="footer-main">
+    Everything you need for taking control over your personal finances<br /><hr />
+    </div><br />
+    <span class="footertext">Monetary movement.</span>
+ <br /><br />
+@*  <div class="image"><img src="~/css/economiq.png" />*@
+    <div></div>
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!_appState.IsLoggedIn)
+        {
+            await _userService.Login();
+            _appState.SetUserLoggedIn();
+        }
+        _appState.SetPageTitle("Economiq");
+        _appState.OnStateChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _appState.OnStateChange -= StateHasChanged;
+    }
+}

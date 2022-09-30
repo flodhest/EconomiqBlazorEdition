@@ -1,0 +1,44 @@
+﻿@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@inject ExpenseService _expenseService
+
+<h3>Recently Added Expenses</h3>
+
+<table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Recipient</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var expense in _expenses)
+            {
+                <tr>
+                    <td>@expense.Title</td>
+                    <td>@expense.Amount</td>
+                    <td>@expense.categoryName</td>
+                    <td>@expense.ExpenseDate</td>
+                    <td>@expense.RecipientName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+@code {
+    private List<GetExpenseDTO> _expenses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _expenses = await _expenseService.GetRecentExpenses();
+    }
+
+    public async Task RefreshList()
+    {
+        _expenses = await _expenseService.GetRecentExpenses();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,42 @@
+﻿@page "/expense"
+@using Economiq.Client.Components.Expense
+@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@inject AppState _appState
+@inject ExpenseService _expenseService
+@implements IDisposable
+
+<div>
+    <button class="mx-auto w-25 btn btn-success" @onclick="()=> {ShowList=false;}">Create</button>
+    <button class="mx-auto w-25 btn btn-success" @onclick="()=> {ShowList=true;}">List</button>
+</div>
+@if (!ShowList)
+{
+    <ExpenseForm UpdateList="RefreshRecent"></ExpenseForm>
+    <RecentExpense @ref="_recentExpenseRef"></RecentExpense>
+}
+else
+{
+    <ListExpense></ListExpense>
+}
+@code {
+    private RecentExpense _recentExpenseRef;
+    private List<GetExpenseDTO> _expenses = new();
+    public bool ShowList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ShowList = false;
+        _expenses = await _expenseService.GetRecentExpenses();
+    }
+
+    private async Task RefreshRecent()
+    {
+        await _recentExpenseRef.RefreshList();
+    }
+
+    public void Dispose()
+    {
+        _appState.OnStateChange -= StateHasChanged;
+    }
+}

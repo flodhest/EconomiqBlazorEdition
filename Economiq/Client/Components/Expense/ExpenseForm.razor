@@ -1,0 +1,135 @@
+﻿@using Economiq.Client.Service
+@using Economiq.Shared.DTO
+@using Economiq.Shared.Models
+@inject ExpenseService _expenseService
+@inject RecipientService _recipientService
+@inject ExpenseCategoryService _categoryService;
+<style> 
+    #NewCategory {
+    position: absolute;
+    top: 0;
+    border-radius: 5px;
+    right: 0px;
+    z-index: 2;
+    border: none;
+    top: 2px;
+    height: 30px;
+    cursor: pointer;
+    color: black;
+    background-color: white;
+    transform: translate(-10px, 50%);
+}
+    .modal {
+        position: absolute; 
+        z-index: 9999;
+    }
+</style>
+<p>@Confirmation</p>
+<EditForm Model="@NewExpense" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-2 form-group form-floating">
+        <InputText class="form-control" id="title" placeholder="Expense" @bind-Value="@NewExpense.Title"></InputText>
+        <label for="title">Title:</label>
+        <ValidationMessage For="@(() => @NewExpense.Title)" />
+    </div>
+    <div class="mb-2 form-group form-floating">
+        <InputNumber  class="form-control" id="amount" @bind-Value="@NewExpense.Amount"></InputNumber>
+        <label for="amount">Amount:</label>
+        <ValidationMessage For="@(() => @NewExpense.Amount)" />
+    </div>
+
+    <div class="mb-2 form-group form-floating">
+        <InputDate  class="form-control" id="date" @bind-Value="@CreationDate"></InputDate>
+        <label for="date">Date:</label>
+        <ValidationMessage For="@(() => @NewExpense.ExpenseDate)" />
+    </div>
+
+    <div class="mb-2 form-group form-floating">
+        <InputSelect class="form-control" id="category" placeholder="Category" @bind-Value="@NewExpense.CategoryName">
+
+            @foreach (ExpenseCategoryDTO category in _categoryList)
+            {
+                <option Value=@category.CategoryName>@category.CategoryName</option>
+            }
+
+        </InputSelect>
+        <button id="NewCategory" type="button" @onclick="()=> {ChangeShowModal();}">+</button>
+        <label for="category" >Category:</label>
+        <ValidationMessage For="@(() => @NewExpense.CategoryName)" />
+    </div>
+
+
+
+    <div class="mb-2 form-group form-floating">
+        <InputSelect  class="form-control" id="recipient" @bind-Value=NewExpense.RecipientName>
+            @foreach (RecipientDTO recipient in _recipients)
+            {
+                <option Value=@recipient.Name>@recipient.Name</option>
+            }
+        </InputSelect>
+        <label for="recipient">Recipient:</label>
+    </div>
+
+
+    <button class="mx-auto w-25 btn btn-success" type="submit">Add Expense</button>
+</EditForm>
+@if(ShowModal){
+    <Economiq.Client.Components.AddCategory.AddCategoryModal 
+    CloseModalFunction="@ChangeShowModal"
+    SaveNewCategoryFunction="@SaveNewCategory"           
+    ExpenseCategoryString="@NewExpenseCategory"
+    CategoryChanged ="@CategoryChanged"/>
+}
+@code {
+    [Parameter]
+    public EventCallback UpdateList { get; set; }
+    public string Confirmation { get; set; } = String.Empty;
+    private List<RecipientDTO> _recipients = new();
+    public ExpenseDTO NewExpense { get; set; } = new();
+    public DateOnly CreationDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+    private String NewExpenseCategory { get; set; } = String.Empty;
+    public List<ExpenseCategoryDTO> _categoryList { get; set; } = new();
+    public bool ShowModal = false; 
+    public void CategoryChanged(string newValue){
+        NewExpenseCategory = newValue;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _recipients = await _recipientService.GetRecipients();
+        _categoryList = await _categoryService.GetCategoryList();
+        NewExpense.ExpenseDate = CreationDate.ToString("yyyy-MM-dd");
+        if (_recipients.Count > 0)
+        {
+            NewExpense.RecipientName = _recipients[0].Name;
+        }
+        StateHasChanged();
+    }
+    public void ChangeShowModal() {
+        NewExpenseCategory = String.Empty;
+        this.ShowModal = !this.ShowModal;
+        StateHasChanged();
+    }
+    public async void SaveNewCategory() {
+        ExpenseCategoryDTO expenseCategory = new()
+            {
+                CategoryName = NewExpenseCategory
+            };
+        await _categoryService.CreateExpenseCategory(expenseCategory);
+        StateHasChanged();
+    }
+    public async Task HandleSubmit()
+    {
+        NewExpense.ExpenseDate = CreationDate.ToString("yyyy-MM-dd");
+        Confirmation = await _expenseService.CreateExpense(NewExpense);
+
+        CreationDate = DateOnly.FromDateTime(DateTime.Now);
+        NewExpense = new ExpenseDTO()
+            {
+                ExpenseDate = CreationDate.ToString("yyyy-MM-dd"),
+                RecipientName = _recipients[0].Name
+            };
+        await UpdateList.InvokeAsync();
+    }
+}
