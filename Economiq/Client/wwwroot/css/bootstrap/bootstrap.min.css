@@ -100,7 +100,7 @@ h5,
 h6 {
 
 
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.2;
 }
 .h1,
@@ -221,12 +221,12 @@ sup {
   top: -0.5em;
 }
 a {
-  color: #0d6efd;
+  color: white;
   text-decoration: none;
 }
-a:hover {
-  color: #0a58ca;
-}
+    a:hover {
+        color:linear-gradient(93.51deg, #9B51E0 2.84%, #3081ED 99.18%);
+    }
 a:not([href]):not([class]),
 a:not([href]):not([class]):hover {
   color: inherit;
@@ -2633,7 +2633,7 @@ fieldset:disabled .btn {
 }
 .btn-primary {
   color: #fff;
-  background-color: #0d6efd;
+z-index:3;
   border-color: #0d6efd;
 }
 .btn-primary:hover {
@@ -6905,6 +6905,8 @@ fieldset:disabled .btn {
   padding-left: 1rem !important;
 }
 .px-4 {
+    z-index: 3;
+    text-align:center;
 
 }
 .px-5 {

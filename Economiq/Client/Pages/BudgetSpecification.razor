@@ -3,6 +3,7 @@
 @page "/budget/{IdAsString}"
 @inject BudgetService _budgetService;
 
+
 @if(_budget != null){
     <h3>@_budget.YearAndMonth</h3>
     <p>@_budget.MaxAmount</p>
@@ -20,6 +21,7 @@
     }
     
 }
+
 @code {
     [Parameter]
     public string IdAsString { get; set; }
